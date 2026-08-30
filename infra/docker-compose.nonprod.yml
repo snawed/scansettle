@@ -1,0 +1,62 @@
+# Deployed to the non-prod EC2 instance by the deploy workflow (via `aws ssm
+# send-command`) — unlike infra/docker-compose.yml (local dev, builds images
+# from source), this pulls pre-built images from ECR. All variables below are
+# written into a sibling .env file by the deploy workflow before `docker
+# compose up -d` runs; nothing here is a real secret value.
+name: scansettle
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: scansettle
+      POSTGRES_USER: scansettle
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - scansettle-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U scansettle -d scansettle"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    image: ${ECR_API_REPOSITORY_URL}:${IMAGE_TAG}
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/scansettle
+      SPRING_DATASOURCE_USERNAME: scansettle
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      APP_JWT_SECRET: ${APP_JWT_SECRET}
+      APP_ENCRYPTION_KEY: ${APP_ENCRYPTION_KEY}
+      APP_CORS_ALLOWED_ORIGINS: http://${PUBLIC_IP}:3000
+      APP_MOCK_BANK_BASE_URL: http://${PUBLIC_IP}:3000/mock-bank
+      APP_LINKS_BASE_URL: http://${PUBLIC_IP}:3000/pay
+      OPEN_BANKING_PROVIDER: mock
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  web:
+    image: ${ECR_WEB_REPOSITORY_URL}:${IMAGE_TAG}
+    restart: unless-stopped
+    environment:
+      API_BASE_URL: http://api:8080
+    ports:
+      - "3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  scansettle-postgres-data:

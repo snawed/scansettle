@@ -1,12 +1,9 @@
 # ScanSettle — Deployment (Phase 10)
 
-Status: Planning document — two deployment paths documented for pickup, neither
-built yet. See ADR-0012 for the decision behind splitting them.
-
-This document is a runbook, not finished IaC: it describes exactly what to
-provision and in what order, with illustrative Terraform/config snippets to
-clarify shape, not copy-paste-ready modules. Building either path is separate
-follow-up work.
+Status: **Non-production path built** (Terraform + GitHub Actions workflows —
+Section 1 below is now a runbook for real code, not a sketch). Production
+(Section 2) is still planning-only. See ADR-0012 for the decision behind
+splitting them.
 
 ## 0. What ScanSettle needs from any environment
 
@@ -37,74 +34,80 @@ to build and push images; the two paths differ in what happens after that.
 
 **Goal**: a single, cheap, disposable environment for demos and manual testing —
 not resilient, not multi-AZ, explicitly not meant to hold real merchant data.
-Reuses `infra/docker-compose.yml` almost as-is.
 
-### 1.1 Prerequisites
+**Status: built.** What follows is the actual runbook, not a sketch:
 
-- An AWS account with the free tier active (new-ish account, or one that hasn't
-  exhausted the 12-month free tier clock).
-- An IAM user or role for Terraform with programmatic access — least-privilege
-  scoped to EC2, VPC, IAM (to create the instance role), and SSM Parameter Store.
-  Do not use root account credentials.
-- A GitHub repo secret holding those credentials (or better, GitHub's OIDC
-  provider for AWS — no long-lived key in GitHub at all; see 1.6).
-- Terraform installed locally for the first `apply` (state bootstrap), then CI
-  can take over.
+- `infra/aws-bootstrap/bootstrap.sh` — one-time AWS CLI script (S3 state bucket,
+  DynamoDB lock table, GitHub OIDC provider, IAM deploy role — least-privilege,
+  not AdministratorAccess).
+- `infra/terraform/nonprod/*.tf` — the actual EC2/VPC/security-group/IAM-instance-role/
+  ECR/SSM-parameters module. `terraform validate` clean.
+- `.github/workflows/terraform-nonprod.yml` — OIDC-authenticated plan/apply,
+  manually triggered (or plans automatically on a PR touching this path).
+- `.github/workflows/deploy-nonprod.yml` — builds + pushes both images to ECR,
+  then redeploys via AWS Systems Manager (no SSH) once CI passes on `main`.
+- `infra/docker-compose.nonprod.yml` — the compose file actually deployed to the
+  instance (pulls pre-built ECR images, unlike `infra/docker-compose.yml` which
+  builds from source for local dev).
 
-### 1.2 Architecture
+### 1.1 Architecture (as built)
 
 ```
-GitHub Actions ──push image──> ECR (or Docker Hub)
+GitHub Actions (OIDC, no stored keys)
        │
-       └──ssh deploy──> EC2 (t3.micro/t2.micro, public subnet, Elastic IP)
-                              │
-                              └── docker compose: web:3000, api:8080, postgres:5432
-                                  (all three containers on one box)
+       ├─ terraform-nonprod.yml ──apply──> EC2 + VPC/SG/IAM + ECR + SSM params
+       │
+       └─ deploy-nonprod.yml ──build+push──> ECR
+                              ──upload──────> S3 (deploy-artifacts/)
+                              ──ssm send-command──> EC2 instance
+                                                       │
+                                                       └─ docker compose: web:3000, api:8080, postgres:5432
 ```
 
-One instance, one Elastic IP, security group open on 80/443 (or just 3000/8080
-for testing without a domain) and 22 (SSH, ideally restricted to a known IP or
-via AWS Systems Manager Session Manager instead of open SSH).
+One instance, one Elastic IP (tagged `Name=scansettle-nonprod`, looked up by
+tag rather than hardcoded), security group open on 3000/8080 only — **no port
+22**. Operator shell access, if ever needed, goes through AWS Systems Manager
+Session Manager (`aws ssm start-session --target <instance-id>`), which the
+instance's IAM role already grants — never SSH.
 
-### 1.3 Step-by-step
+### 1.2 One-time setup (you do this)
 
-1. **Terraform state backend** (one-time, by hand or a tiny bootstrap script):
-   an S3 bucket (versioned, encrypted) + a DynamoDB table for the state lock.
-   Free tier covers this trivially at ScanSettle's state-file size.
-2. **VPC**: either a minimal custom VPC (one public subnet, one route table, one
-   internet gateway) or just use the account's default VPC — for a non-prod
-   single-box environment, the default VPC is a legitimate, simpler choice.
-3. **Security group**: inbound 22 (SSH — restrict to your IP or use SSM Session
-   Manager and drop this rule entirely), 3000 and 8080 (or 80/443 if a domain +
-   reverse proxy is added later), outbound all.
-4. **IAM instance role**: minimal — SSM managed instance core policy (for Session
-   Manager access without SSH) and permission to read the SSM Parameter Store
-   parameters this app needs (see 1.5).
-5. **EC2 instance**: `t3.micro` (free tier: 750 hrs/month for 12 months),
-   Amazon Linux 2023 or Ubuntu, an Elastic IP attached. `user_data` installs
-   Docker + the Docker Compose plugin and clones/pulls the deploy directory —
-   or, simpler, GitHub Actions pushes a rendered `docker-compose.yml` and
-   `.env` file to the instance on every deploy (see 1.6).
-6. **Secrets**: put `APP_JWT_SECRET`, `APP_ENCRYPTION_KEY`, and the Postgres
-   password in **SSM Parameter Store** as `SecureString`s (free, unlike Secrets
-   Manager's per-secret charge) — the instance role reads them at container
-   start via a small entrypoint script, or Terraform/CI injects them into a
-   `.env` file that's never committed.
-7. **DNS (optional for this path)**: skip it, or a single Route53 `A` record to
-   the Elastic IP if a domain is already owned — not required for internal
-   testing (use the Elastic IP directly).
-8. **GitHub Actions deploy job** (append to `.github/workflows/ci.yml` or a new
-   `deploy.yml`, triggered on push to `main` after CI passes):
-   - Build and push both images to ECR (a `docker/build-push-action` step per
-     image, tagged with the git SHA).
-   - SSH (via an ephemeral key, or SSM `send-command` to avoid opening port 22
-     at all) to the EC2 instance: `docker compose pull && docker compose up -d`.
-9. **First deploy & smoke test**: hit `http://<elastic-ip>:8080/actuator/health`
-   and `http://<elastic-ip>:3000/`, then run through the same manual checks used
-   throughout this build (register a merchant, log in, create a payment link,
-   pay via the mock bank) against the live instance.
+1. **Bootstrap AWS** — open **AWS CloudShell** (console.aws.amazon.com → the
+   `>_` icon, top right, region **eu-west-2**) so nothing needs installing
+   locally. Upload `infra/aws-bootstrap/bootstrap.sh`, then:
+   ```bash
+   chmod +x bootstrap.sh && ./bootstrap.sh
+   ```
+   It prints an IAM role ARN and three config values at the end.
+2. **Add them to GitHub** (`github.com/snawed/scansettle/settings`):
+   - **Secrets** (Secrets and variables → Actions → Secrets tab):
+     `AWS_DEPLOY_ROLE_ARN` = the role ARN bootstrap.sh printed.
+   - **Variables** (same page → Variables tab):
+     `AWS_REGION` = `eu-west-2`, `TF_STATE_BUCKET` and `TF_LOCK_TABLE` = the
+     values bootstrap.sh printed.
+3. **Provision the infrastructure** — GitHub → Actions tab → "Terraform
+   (non-prod)" → Run workflow → `action: apply`. First run takes a few minutes
+   (EC2 boots, installs Docker via `user_data`). Note the `public_ip` output.
+4. **First deploy** — GitHub → Actions tab → "Deploy (non-prod)" → Run workflow
+   (or just push to `main` — it also runs automatically once CI passes).
 
-### 1.4 Cost & free-tier guardrails
+### 1.3 Smoke test
+
+Once the deploy workflow finishes (its summary prints the URLs):
+- `http://<public-ip>:8080/actuator/health` → `{"status":"UP",...}`
+- `http://<public-ip>:3000/` → the ScanSettle landing page
+- Run through the same manual checks used throughout this build: register a
+  merchant, log in, create a payment link, pay via the mock bank.
+
+### 1.4 Redeploying after a code change
+
+Nothing manual — push to `main`, CI runs, and `deploy-nonprod.yml` triggers
+automatically once CI succeeds, rebuilding and rolling both images. Infra
+changes (editing `infra/terraform/nonprod/*.tf`) need a separate, deliberate
+"Terraform (non-prod)" → `apply` run — infra changes are never auto-applied on
+push, only planned (see the workflow's PR-comment behaviour).
+
+### 1.5 Cost & free-tier guardrails
 
 - `t3.micro`/`t2.micro`: free for 750 hrs/month for 12 months from account
   creation — one instance running continuously stays exactly at that limit, so
@@ -115,13 +118,17 @@ via AWS Systems Manager Session Manager instead of open SSH).
 - Set a **AWS Budget alert** (free) at a low dollar threshold (e.g. $1) as a
   tripwire the moment anything drifts outside free tier.
 
-### 1.5 Teardown
+### 1.6 Teardown
 
-`terraform destroy` removes the instance, EIP, security group, and IAM role in
-one command — the whole point of provisioning this via Terraform rather than
-clicking through the console is that "throw it away and rebuild" is free and
-fast. Do this whenever the testing environment isn't actively in use, since an
-EIP not attached to a running instance is billed even on free tier.
+Run the "Terraform (non-prod)" workflow won't destroy — that action isn't
+wired up on purpose (destroy is rarer and riskier than plan/apply, and this
+workflow only supports `plan`/`apply`). To tear down: from the same directory
+locally (`cd infra/terraform/nonprod && terraform init -backend-config=...`
+with the values from bootstrap.sh's output, then `terraform destroy`) — or add
+a `destroy` option to the workflow's `action` input later if teardown becomes
+routine. Removes the instance, EIP, security group, IAM role, and ECR repos in
+one command. Do this whenever the testing environment isn't actively in use,
+since an EIP not attached to a running instance is billed even on free tier.
 
 ---
 

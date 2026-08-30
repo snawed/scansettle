@@ -1,6 +1,7 @@
 # ADR-0012: Two documented deployment paths — non-prod now, prod deferred
 
-Status: Accepted (planning only — neither path built yet)
+Status: Accepted — non-prod path built (Terraform + GitHub Actions OIDC,
+docs/deployment.md Section 1); production path still planning-only.
 Date: 2026-08-30
 
 ## Context

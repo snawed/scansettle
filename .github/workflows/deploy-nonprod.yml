@@ -1,0 +1,171 @@
+name: Deploy (non-prod)
+
+# Builds both images, pushes to ECR, and redeploys the EC2 instance via AWS
+# Systems Manager (no SSH). Requires infra/terraform/nonprod to have already
+# been applied at least once (docs/deployment.md Section 1) — the ECR repos
+# and the tagged Elastic IP this workflow looks up won't exist before that.
+on:
+  workflow_dispatch: {}
+  # Runs after CI (.github/workflows/ci.yml) finishes on main — deploying only
+  # once the backend/frontend build+test job has actually passed, rather than
+  # racing it on every push.
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    name: Build, push, deploy
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    steps:
+      # workflow_run doesn't automatically check out the tested commit — pin to
+      # it explicitly (falls back to the triggering commit for workflow_dispatch).
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Set the image tag
+        run: echo "IMAGE_TAG=${{ github.event.workflow_run.head_sha || github.sha }}" >> "$GITHUB_ENV"
+
+      - name: Configure AWS credentials (OIDC — no stored keys)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Look up the instance and its Elastic IP
+        id: lookup
+        run: |
+          INSTANCE_ID=$(aws ec2 describe-instances \
+            --filters "Name=tag:Name,Values=scansettle-nonprod" "Name=instance-state-name,Values=running" \
+            --query "Reservations[0].Instances[0].InstanceId" --output text)
+          PUBLIC_IP=$(aws ec2 describe-addresses \
+            --filters "Name=tag:Name,Values=scansettle-nonprod" \
+            --query "Addresses[0].PublicIp" --output text)
+
+          if [ "$INSTANCE_ID" = "None" ] || [ "$PUBLIC_IP" = "None" ]; then
+            echo "::error::No running scansettle-nonprod instance/EIP found — run the Terraform (non-prod) workflow with action=apply first."
+            exit 1
+          fi
+
+          echo "instance_id=${INSTANCE_ID}" >> "$GITHUB_OUTPUT"
+          echo "public_ip=${PUBLIC_IP}" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push API image
+        env:
+          REPO: ${{ steps.ecr-login.outputs.registry }}/scansettle-api
+        run: |
+          docker build -t "${REPO}:${IMAGE_TAG}" apps/api
+          docker push "${REPO}:${IMAGE_TAG}"
+
+      - name: Build and push web image
+        env:
+          REPO: ${{ steps.ecr-login.outputs.registry }}/scansettle-web
+          PUBLIC_IP: ${{ steps.lookup.outputs.public_ip }}
+        run: |
+          docker build \
+            --build-arg NEXT_PUBLIC_API_BASE_URL="http://${PUBLIC_IP}:8080" \
+            -t "${REPO}:${IMAGE_TAG}" apps/web
+          docker push "${REPO}:${IMAGE_TAG}"
+
+      - name: Render the remote deploy script
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          PUBLIC_IP: ${{ steps.lookup.outputs.public_ip }}
+        run: |
+          cat > /tmp/deploy.sh <<'SCRIPT'
+          #!/bin/bash
+          set -euo pipefail
+
+          mkdir -p /opt/scansettle
+          cd /opt/scansettle
+
+          aws ecr get-login-password --region "__AWS_REGION__" \
+            | docker login --username AWS --password-stdin "__ECR_REGISTRY__"
+
+          cat > .env <<ENV
+          ECR_API_REPOSITORY_URL=__ECR_REGISTRY__/scansettle-api
+          ECR_WEB_REPOSITORY_URL=__ECR_REGISTRY__/scansettle-web
+          IMAGE_TAG=__IMAGE_TAG__
+          PUBLIC_IP=__PUBLIC_IP__
+          POSTGRES_PASSWORD=$(aws ssm get-parameter --name /scansettle/nonprod/postgres-password --with-decryption --query Parameter.Value --output text --region __AWS_REGION__)
+          APP_JWT_SECRET=$(aws ssm get-parameter --name /scansettle/nonprod/app-jwt-secret --with-decryption --query Parameter.Value --output text --region __AWS_REGION__)
+          APP_ENCRYPTION_KEY=$(aws ssm get-parameter --name /scansettle/nonprod/app-encryption-key --with-decryption --query Parameter.Value --output text --region __AWS_REGION__)
+          ENV
+
+          docker compose -f docker-compose.yml pull
+          docker compose -f docker-compose.yml up -d
+          docker image prune -f
+          SCRIPT
+
+          sed -i \
+            -e "s|__AWS_REGION__|${AWS_REGION}|g" \
+            -e "s|__ECR_REGISTRY__|${ECR_REGISTRY}|g" \
+            -e "s|__IMAGE_TAG__|${IMAGE_TAG}|g" \
+            -e "s|__PUBLIC_IP__|${PUBLIC_IP}|g" \
+            /tmp/deploy.sh
+
+      - name: Upload deploy artifacts to S3
+        env:
+          STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
+        run: |
+          # Reuses the Terraform state bucket under a separate prefix rather than
+          # provisioning a second bucket. SSM Run Command's own payload has a much
+          # smaller size limit than these two files, so the instance downloads
+          # them from here instead of receiving them inline.
+          aws s3 cp infra/docker-compose.nonprod.yml "s3://${STATE_BUCKET}/deploy-artifacts/docker-compose.yml"
+          aws s3 cp /tmp/deploy.sh "s3://${STATE_BUCKET}/deploy-artifacts/deploy.sh"
+
+      - name: Run the deploy script on the instance via SSM
+        env:
+          INSTANCE_ID: ${{ steps.lookup.outputs.instance_id }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
+        run: |
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "${INSTANCE_ID}" \
+            --document-name "AWS-RunShellScript" \
+            --comment "ScanSettle non-prod deploy ${IMAGE_TAG}" \
+            --parameters "{\"commands\":[
+              \"mkdir -p /opt/scansettle\",
+              \"aws s3 cp s3://${STATE_BUCKET}/deploy-artifacts/docker-compose.yml /opt/scansettle/docker-compose.yml --region ${AWS_REGION}\",
+              \"aws s3 cp s3://${STATE_BUCKET}/deploy-artifacts/deploy.sh /tmp/deploy.sh --region ${AWS_REGION}\",
+              \"chmod +x /tmp/deploy.sh\",
+              \"/tmp/deploy.sh\"
+            ]}" \
+            --query "Command.CommandId" --output text)
+
+          echo "SSM command: ${COMMAND_ID}"
+
+          for _ in $(seq 1 30); do
+            STATUS=$(aws ssm get-command-invocation \
+              --command-id "${COMMAND_ID}" --instance-id "${INSTANCE_ID}" \
+              --query "Status" --output text 2>/dev/null || echo "Pending")
+            echo "Status: ${STATUS}"
+            if [ "${STATUS}" = "Success" ]; then break; fi
+            if [ "${STATUS}" = "Failed" ] || [ "${STATUS}" = "Cancelled" ] || [ "${STATUS}" = "TimedOut" ]; then
+              aws ssm get-command-invocation --command-id "${COMMAND_ID}" --instance-id "${INSTANCE_ID}"
+              exit 1
+            fi
+            sleep 10
+          done
+
+          aws ssm get-command-invocation --command-id "${COMMAND_ID}" --instance-id "${INSTANCE_ID}" \
+            --query "StandardOutputContent" --output text
+
+      - name: Summary
+        env:
+          PUBLIC_IP: ${{ steps.lookup.outputs.public_ip }}
+        run: |
+          echo "Deployed ${IMAGE_TAG} — http://${PUBLIC_IP}:3000 (web), http://${PUBLIC_IP}:8080/actuator/health (api)" >> "$GITHUB_STEP_SUMMARY"

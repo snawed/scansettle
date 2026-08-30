@@ -29,3 +29,12 @@ npm-debug.log*
 
 # Claude Code session artifacts
 .claude/
+
+# Terraform — provider binaries and local plan/state artifacts, never the
+# module code or the lock file (both of those ARE committed)
+**/.terraform/
+*.tfplan
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
