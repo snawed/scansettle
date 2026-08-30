@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;}
+  .root{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#F7F4EE;color:#151312;width:390px;height:844px;overflow:hidden;display:flex;flex-direction:column;padding:30px 24px;}
+  .serif{font-family:'Instrument Serif',serif;}
+  .bank-card{display:flex;align-items:center;gap:14px;padding:16px 16px;border-radius:16px;background:#fff;box-shadow:0 8px 20px -12px rgba(14,27,51,0.15);margin-bottom:10px;}
+  .bank-card.selected{box-shadow:0 0 0 2px #C9A227,0 8px 20px -12px rgba(14,27,51,0.15);}
+  .mono{width:40px;height:40px;border-radius:12px;background:#EDE7DA;flex-shrink:0;}
+</style>
+</helmet>
+<div class="root">
+  <div style="font-size:12px;color:#8B8478;font-weight:700;margin-bottom:6px;">← Cancel</div>
+  <div class="serif" style="font-size:28px;margin-bottom:18px;">Choose your bank</div>
+
+  <input placeholder="Search banks" style="width:100%;border:1.5px solid #EDE7DA;border-radius:14px;padding:14px 16px;font-family:inherit;font-size:15px;background:#fff;margin-bottom:16px;">
+
+  <div style="flex:1;overflow:auto;">
+    <div class="bank-card selected"><div class="mono"></div><div style="font-weight:700;font-size:15px;">Monzo</div></div>
+    <div class="bank-card"><div class="mono"></div><div style="font-weight:700;font-size:15px;">Barclays</div></div>
+    <div class="bank-card"><div class="mono"></div><div style="font-weight:700;font-size:15px;">HSBC UK</div></div>
+    <div class="bank-card"><div class="mono"></div><div style="font-weight:700;font-size:15px;">NatWest</div></div>
+    <div class="bank-card"><div class="mono"></div><div style="font-weight:700;font-size:15px;">Lloyds Bank</div></div>
+    <div class="bank-card"><div class="mono"></div><div style="font-weight:700;font-size:15px;">Nationwide</div></div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  backend:
+    name: Backend (build + test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: temurin
+          cache: maven
+
+      - name: Unit tests
+        working-directory: apps/api
+        run: mvn -B test
+
+      - name: Integration tests (Testcontainers)
+        working-directory: apps/api
+        run: mvn -B verify
+
+      - name: Build jar
+        working-directory: apps/api
+        run: mvn -B -DskipTests package
+
+  frontend:
+    name: Frontend (lint + build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: apps/web
+        run: npm ci
+
+      - name: Lint
+        working-directory: apps/web
+        run: npm run lint
+
+      - name: Dependency vulnerability audit
+        working-directory: apps/web
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Build
+        working-directory: apps/web
+        run: npm run build

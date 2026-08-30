@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;}
+  .root{font-family:'IBM Plex Sans',system-ui,sans-serif;background:#F4F5F7;color:#12141A;width:1440px;height:900px;overflow:hidden;display:flex;font-size:13px;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .sidebar{width:200px;background:#161A23;color:#C7CCD6;flex-shrink:0;padding:20px 14px;display:flex;flex-direction:column;}
+  .nav-item{padding:9px 12px;border-radius:6px;font-weight:600;font-size:13px;margin-bottom:2px;}
+  .nav-item.active{background:#0F62FE;color:#fff;}
+  label{font-size:11px;font-weight:700;color:#5B616E;text-transform:uppercase;letter-spacing:0.03em;display:block;margin-bottom:6px;}
+  input{width:100%;border:1px solid #E1E4E9;border-radius:6px;padding:10px 12px;font-family:inherit;font-size:14px;background:#fff;}
+  .field{margin-bottom:16px;}
+  .btn{background:#0F62FE;color:#fff;border:none;border-radius:6px;padding:11px 16px;font-weight:700;font-size:13px;font-family:inherit;cursor:pointer;width:100%;}
+  .panel{background:#fff;border:1px solid #E1E4E9;border-radius:6px;padding:22px;}
+</style>
+</helmet>
+<div class="root">
+  <div class="sidebar">
+    <div style="color:#fff;font-weight:700;font-size:15px;margin-bottom:26px;">ScanSettle</div>
+    <div class="nav-item">Dashboard</div>
+    <div class="nav-item active">Payments</div>
+    <div class="nav-item">Links</div>
+    <div class="nav-item">ScanSettle Tables</div>
+    <div class="nav-item">Reconciliation</div>
+    <div class="nav-item">Settings</div>
+  </div>
+
+  <div style="flex:1;padding:20px 24px;overflow:auto;">
+    <div style="font-weight:700;font-size:16px;margin-bottom:16px;">New payment</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:900px;">
+      <div class="panel">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div class="field"><label>Amount (GBP)</label><input class="mono" value="2500.00"></div>
+          <div class="field"><label>Reference</label><input class="mono" value="INV-1023"></div>
+        </div>
+        <div class="field"><label>Description</label><input value="Boiler Installation"></div>
+        <div class="field"><label>Expiry</label><input value="7 days"></div>
+        <div style="font-size:11px;color:#5B616E;margin:12px 0 14px;">Fee 0.35% (cap £2.00) — receive <span class="mono" style="font-weight:600;color:#12141A;">£2,498.00</span></div>
+        <button class="btn">Generate link + QR</button>
+      </div>
+
+      <div class="panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div style="width:140px;height:140px;background:repeating-linear-gradient(45deg,#12141A 0 5px,#fff 5px 10px);border-radius:6px;margin-bottom:14px;border:1px solid #E1E4E9;"></div>
+        <div class="mono" style="font-size:11px;color:#5B616E;">scansettle.link/dp-inv1023</div>
+        <div style="display:flex;gap:8px;margin-top:14px;">
+          <button style="border:1px solid #E1E4E9;background:#fff;border-radius:6px;padding:7px 12px;font-size:12px;font-family:inherit;">Copy link</button>
+          <button style="border:1px solid #E1E4E9;background:#fff;border-radius:6px;padding:7px 12px;font-size:12px;font-family:inherit;">Download QR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

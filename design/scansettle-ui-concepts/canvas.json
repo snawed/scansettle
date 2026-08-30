@@ -1,0 +1,38 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1600, "h": 820 },
+
+    { "file": "A_Dashboard.dc.html", "x": 0, "y": 970, "w": 1440, "h": 900 },
+    { "file": "A_CreatePayment.dc.html", "x": 1540, "y": 970, "w": 1440, "h": 900 },
+    { "file": "A_PayByBank.dc.html", "x": 3080, "y": 970, "w": 390, "h": 844 },
+    { "file": "A_BankSelect.dc.html", "x": 3570, "y": 970, "w": 390, "h": 844 },
+    { "file": "A_Success.dc.html", "x": 4060, "y": 970, "w": 390, "h": 844 },
+    { "file": "A_TablesBill.dc.html", "x": 4550, "y": 970, "w": 390, "h": 844 },
+    { "file": "A_SplitBill.dc.html", "x": 5040, "y": 970, "w": 390, "h": 844 },
+    { "file": "A_Tip.dc.html", "x": 5530, "y": 970, "w": 390, "h": 844 },
+
+    { "file": "B_Dashboard.dc.html", "x": 0, "y": 2020, "w": 1440, "h": 900 },
+    { "file": "B_CreatePayment.dc.html", "x": 1540, "y": 2020, "w": 1440, "h": 900 },
+    { "file": "B_PayByBank.dc.html", "x": 3080, "y": 2020, "w": 390, "h": 844 },
+    { "file": "B_BankSelect.dc.html", "x": 3570, "y": 2020, "w": 390, "h": 844 },
+    { "file": "B_Success.dc.html", "x": 4060, "y": 2020, "w": 390, "h": 844 },
+    { "file": "B_TablesBill.dc.html", "x": 4550, "y": 2020, "w": 390, "h": 844 },
+    { "file": "B_SplitBill.dc.html", "x": 5040, "y": 2020, "w": 390, "h": 844 },
+    { "file": "B_Tip.dc.html", "x": 5530, "y": 2020, "w": 390, "h": 844 },
+
+    { "file": "C_Dashboard.dc.html", "x": 0, "y": 3070, "w": 1440, "h": 900 },
+    { "file": "C_CreatePayment.dc.html", "x": 1540, "y": 3070, "w": 1440, "h": 900 },
+    { "file": "C_PayByBank.dc.html", "x": 3080, "y": 3070, "w": 390, "h": 844 },
+    { "file": "C_BankSelect.dc.html", "x": 3570, "y": 3070, "w": 390, "h": 844 },
+    { "file": "C_Success.dc.html", "x": 4060, "y": 3070, "w": 390, "h": 844 },
+    { "file": "C_TablesBill.dc.html", "x": 4550, "y": 3070, "w": 390, "h": 844 },
+    { "file": "C_SplitBill.dc.html", "x": 5040, "y": 3070, "w": 390, "h": 844 },
+    { "file": "C_Tip.dc.html", "x": 5530, "y": 3070, "w": 390, "h": 844 }
+  ],
+  "annotations": [
+    { "id": "label-a", "x": 0, "y": 905, "w": 500, "text": "OPTION A — Fintech Minimal" },
+    { "id": "label-b", "x": 0, "y": 1955, "w": 500, "text": "OPTION B — Modern Premium" },
+    { "id": "label-c", "x": 0, "y": 3005, "w": 500, "text": "OPTION C — Merchant Utility" }
+  ],
+  "launch": { "view": "canvas" }
+}

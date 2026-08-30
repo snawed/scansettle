@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;}
+  a{color:#2454FF;text-decoration:none;} a:hover{color:#1B3ECC;}
+  .root{font-family:'Manrope',system-ui,sans-serif;background:#FFFFFF;color:#0B0F19;width:1440px;height:900px;overflow:hidden;display:flex;flex-direction:column;}
+  .row{display:flex;align-items:center;}
+  label{font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:8px;}
+  input,textarea{width:100%;border:1px solid #E1E3E8;border-radius:10px;padding:14px 16px;font-family:inherit;font-size:15px;color:#0B0F19;background:#FBFBFC;}
+  .field{margin-bottom:22px;}
+  .btn-primary{background:#2454FF;color:#fff;border:none;border-radius:10px;padding:15px 22px;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;width:100%;}
+</style>
+</helmet>
+<div class="root">
+  <div class="row" style="justify-content:space-between;padding:24px 48px;border-bottom:1px solid #EFF0F3;">
+    <div style="font-weight:800;font-size:19px;letter-spacing:-0.02em;">ScanSettle</div>
+    <div style="font-size:14px;color:#6B7280;font-weight:600;">← Back to dashboard</div>
+  </div>
+
+  <div style="flex:1;display:flex;justify-content:center;padding:56px 48px;overflow:auto;">
+    <div style="width:480px;">
+      <div style="font-size:28px;font-weight:800;letter-spacing:-0.02em;margin-bottom:6px;">Create a payment</div>
+      <div style="font-size:14px;color:#6B7280;margin-bottom:36px;">Get paid directly into your bank account — no card fees.</div>
+
+      <div class="field">
+        <label>Amount</label>
+        <div style="position:relative;">
+          <span style="position:absolute;left:16px;top:14px;color:#9CA3AF;font-size:15px;">£</span>
+          <input style="padding-left:30px;font-size:24px;font-weight:800;" value="2,500.00">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Description</label>
+        <input value="Boiler Installation">
+      </div>
+
+      <div class="field">
+        <label>Invoice reference</label>
+        <input value="INV-1023">
+      </div>
+
+      <div style="height:1px;background:#EFF0F3;margin:28px 0;"></div>
+
+      <div style="font-size:13px;color:#9CA3AF;margin-bottom:18px;">Platform fee: 0.35%, capped at £2.00 — you'll receive £2,498.00</div>
+
+      <button class="btn-primary">Generate ScanSettle Link &amp; QR</button>
+    </div>
+
+    <div style="width:1px;background:#EFF0F3;margin:0 56px;"></div>
+
+    <div style="width:280px;">
+      <div style="font-size:13px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:16px;">Preview</div>
+      <div style="border:1px solid #E7E8EC;border-radius:14px;padding:28px;text-align:center;">
+        <div style="width:168px;height:168px;background:repeating-linear-gradient(45deg,#0B0F19 0 6px,#fff 6px 12px);margin:0 auto 20px;border-radius:8px;"></div>
+        <div style="font-size:13px;color:#6B7280;margin-bottom:4px;">Dave's Heating &amp; Plumbing</div>
+        <div style="font-size:24px;font-weight:800;">£2,500.00</div>
+        <div style="font-size:13px;color:#9CA3AF;margin-top:6px;">scansettle.link/dp-inv1023</div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

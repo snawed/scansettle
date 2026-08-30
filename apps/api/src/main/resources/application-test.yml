@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 5
+      connection-timeout: 30000
+
+app:
+  # Integration tests legitimately fire many rapid requests at rate-limited paths
+  # (registration, bill payments) from the same loopback address — see RateLimitFilter.
+  rate-limit:
+    enabled: false
+  velocity-guard:
+    enabled: false
+  encryption:
+    key: "9/MAc6RRKlyPpRLV8QytZbNd/w9UqtRw05iadlYNlds="
+  security:
+    jwt:
+      secret: "test-only-jwt-signing-secret-do-not-use-in-prod-32bytes+"
+  open-banking:
+    webhook-secret: "test-only-mock-webhook-signing-secret-do-not-use-in-prod"

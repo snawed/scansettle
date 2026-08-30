@@ -1,0 +1,64 @@
+name: scansettle
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: scansettle
+      POSTGRES_USER: scansettle
+      POSTGRES_PASSWORD: scansettle # dev-only — never a real secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - scansettle-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U scansettle -d scansettle"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ../apps/api
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/scansettle
+      SPRING_DATASOURCE_USERNAME: scansettle
+      SPRING_DATASOURCE_PASSWORD: scansettle
+      APP_JWT_SECRET: ${APP_JWT_SECRET:-dev-only-jwt-signing-secret-do-not-use-in-prod-32bytes+}
+      APP_ENCRYPTION_KEY: ${APP_ENCRYPTION_KEY:-jSw4UvsjHkkm+6EBGiIn3znFCRNWqBY0USucGw1hYeg=}
+      OPEN_BANKING_PROVIDER: mock
+      # Real-provider placeholders — unused while OPEN_BANKING_PROVIDER=mock (Phase 5 only):
+      OPEN_BANKING_CLIENT_ID: ${OPEN_BANKING_CLIENT_ID:-}
+      OPEN_BANKING_CLIENT_SECRET: ${OPEN_BANKING_CLIENT_SECRET:-}
+      OPEN_BANKING_WEBHOOK_SECRET: ${OPEN_BANKING_WEBHOOK_SECRET:-}
+      OPEN_BANKING_REDIRECT_URL: ${OPEN_BANKING_REDIRECT_URL:-}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  web:
+    build:
+      context: ../apps/web
+      args:
+        # Baked into the client bundle at build time — the browser's own address
+        # for the API, not the Docker-internal one (see apps/web/Dockerfile).
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8080}
+    environment:
+      API_BASE_URL: http://api:8080
+    ports:
+      - "3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  scansettle-postgres-data:

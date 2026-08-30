@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;}
+  .root{font-family:'Manrope',system-ui,sans-serif;background:#0B0F19;color:#fff;width:1600px;height:820px;overflow:hidden;padding:64px 72px;display:flex;flex-direction:column;}
+  .card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:28px;flex:1;}
+  .tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:0.06em;padding:4px 10px;border-radius:100px;margin-bottom:14px;}
+</style>
+</helmet>
+<div class="root">
+  <div style="font-size:13px;font-weight:700;color:#8FA0FF;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;">Phase 1 — UI/UX Directions</div>
+  <div style="font-size:44px;font-weight:800;letter-spacing:-0.02em;margin-bottom:8px;">ScanSettle — three visual directions</div>
+  <div style="font-size:16px;color:#A7ADBD;max-width:820px;margin-bottom:40px;line-height:1.55;">
+    Same 8 screens, three genuinely different treatments. Each screen row below (Merchant Dashboard,
+    Create Payment, Pay by Bank, Bank Selection, Payment Success, Tables Bill, Split Bill, Tip) repeats
+    across the three option rows underneath this cover, so you can compare directly down each column.
+  </div>
+
+  <div style="display:flex;gap:20px;flex:1;">
+    <div class="card">
+      <span class="tag" style="background:rgba(36,84,255,0.18);color:#8FA0FF;">OPTION A</span>
+      <div style="font-size:22px;font-weight:800;margin-bottom:8px;">Fintech Minimal</div>
+      <div style="font-size:14px;color:#A7ADBD;line-height:1.6;">White backgrounds, oversized amounts, one restrained accent colour, generous whitespace. Manrope throughout. Stripe/Revolut-style clarity — nothing competes with the number.</div>
+    </div>
+    <div class="card">
+      <span class="tag" style="background:rgba(201,162,39,0.2);color:#E7CE7A;">OPTION B</span>
+      <div style="font-size:22px;font-weight:800;margin-bottom:8px;">Modern Premium</div>
+      <div style="font-size:14px;color:#A7ADBD;line-height:1.6;">Deep navy + warm gold, elevated cards, layered shadow, a serif/sans pairing (Instrument Serif + Plus Jakarta Sans). Built to feel like a premium banking product, not a utility.</div>
+    </div>
+    <div class="card">
+      <span class="tag" style="background:rgba(15,98,254,0.18);color:#7BAAFF;">OPTION C</span>
+      <div style="font-size:22px;font-weight:800;margin-bottom:8px;">Merchant Utility</div>
+      <div style="font-size:14px;color:#A7ADBD;line-height:1.6;">Dense data table, sidebar nav, functional status colour-coding, IBM Plex Sans + Mono for numbers. Optimised for a tradesperson or bartender using it fifty times a shift.</div>
+    </div>
+  </div>
+
+  <div style="margin-top:36px;font-size:13px;color:#6B7280;">Desktop screens (Dashboard, Create Payment) are 1440×900 · Mobile screens are 390×844, actual size.</div>
+</div>
+</x-dc>
+</body>
+</html>

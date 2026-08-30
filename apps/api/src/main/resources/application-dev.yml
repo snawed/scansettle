@@ -1,0 +1,21 @@
+app:
+  encryption:
+    # Dev-only placeholder — never use a fixed, checked-in key outside local dev.
+    key: "jSw4UvsjHkkm+6EBGiIn3znFCRNWqBY0USucGw1hYeg="
+  security:
+    jwt:
+      # Dev-only placeholder — never use a fixed, checked-in secret outside local dev.
+      secret: "dev-only-jwt-signing-secret-do-not-use-in-prod-32bytes+"
+  open-banking:
+    # Signs the mock provider's own webhooks — a real {{OPEN_BANKING_PROVIDER}}
+    # deployment would use a secret issued by that provider, never a fixed value.
+    webhook-secret: "dev-only-mock-webhook-signing-secret-do-not-use-in-prod"
+
+management:
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.scansettle: DEBUG

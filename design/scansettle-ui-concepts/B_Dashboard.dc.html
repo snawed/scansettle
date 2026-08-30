@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;}
+  a{color:#C9A227;text-decoration:none;} a:hover{color:#B4901E;}
+  .root{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#F7F4EE;color:#151312;width:1440px;height:900px;overflow:hidden;display:flex;}
+  .serif{font-family:'Instrument Serif',serif;}
+  .sidebar{width:240px;background:#0E1B33;color:#C7CCDA;flex-shrink:0;display:flex;flex-direction:column;padding:28px 20px;}
+  .nav-item{padding:12px 14px;border-radius:12px;font-weight:600;font-size:14px;margin-bottom:4px;display:flex;align-items:center;gap:10px;}
+  .nav-item.active{background:#1F3357;color:#F4E3AC;}
+  .card{background:#FFFFFF;border-radius:20px;box-shadow:0 20px 40px -20px rgba(14,27,51,0.18);}
+  .status-paid{color:#0E1B33;background:#F4E3AC;padding:5px 12px;border-radius:100px;font-size:12px;font-weight:700;}
+  .status-pending{color:#8A5A1E;background:#FBE9C8;padding:5px 12px;border-radius:100px;font-size:12px;font-weight:700;}
+</style>
+</helmet>
+<div class="root">
+  <div class="sidebar">
+    <div style="color:#fff;font-size:20px;font-weight:800;margin-bottom:44px;letter-spacing:-0.01em;">ScanSettle</div>
+    <div class="nav-item active">Dashboard</div>
+    <div class="nav-item">Payments</div>
+    <div class="nav-item">Links</div>
+    <div class="nav-item">ScanSettle Tables</div>
+    <div class="nav-item">Reconciliation</div>
+    <div style="flex:1;"></div>
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 4px;">
+      <div style="width:34px;height:34px;border-radius:100px;background:#C9A227;display:flex;align-items:center;justify-content:center;color:#0E1B33;font-weight:800;font-size:13px;">DP</div>
+      <div style="font-size:13px;font-weight:700;color:#fff;">Dave's Heating</div>
+    </div>
+  </div>
+
+  <div style="flex:1;padding:36px 44px;overflow:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;">
+      <div class="serif" style="font-size:32px;">Good afternoon, Dave</div>
+      <button style="background:linear-gradient(135deg,#C9A227,#E7CE7A);border:none;border-radius:100px;padding:14px 24px;font-weight:800;font-size:14px;color:#0E1B33;font-family:inherit;">+ New Payment</button>
+    </div>
+
+    <div class="card" style="background:linear-gradient(135deg,#0E1B33,#1F3357);color:#fff;padding:32px 36px;margin-bottom:24px;">
+      <div style="font-size:13px;color:#C7CCDA;font-weight:600;margin-bottom:8px;">Today's payments</div>
+      <div class="serif" style="font-size:52px;">£4,280.00</div>
+      <div style="display:flex;gap:36px;margin-top:20px;">
+        <div><div style="font-size:12px;color:#9AA4BD;">This month</div><div style="font-weight:800;font-size:18px;color:#F4E3AC;">£38,940.00</div></div>
+        <div><div style="font-size:12px;color:#9AA4BD;">Fees paid</div><div style="font-weight:800;font-size:18px;">£94.12</div></div>
+      </div>
+    </div>
+
+    <div style="font-weight:800;font-size:16px;margin-bottom:12px;">Recent transactions</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="card" style="padding:18px 22px;display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-weight:700;">Boiler Installation</div><div style="font-size:13px;color:#8B8478;">INV-1023 · Today, 09:41</div></div>
+        <div style="display:flex;align-items:center;gap:16px;"><div style="font-weight:800;font-size:16px;">£2,500.00</div><span class="status-paid">Confirmed</span></div>
+      </div>
+      <div class="card" style="padding:18px 22px;display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-weight:700;">Annual Service — Boiler</div><div style="font-size:13px;color:#8B8478;">INV-1022 · Today, 08:15</div></div>
+        <div style="display:flex;align-items:center;gap:16px;"><div style="font-weight:800;font-size:16px;">£180.00</div><span class="status-paid">Confirmed</span></div>
+      </div>
+      <div class="card" style="padding:18px 22px;display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-weight:700;">Emergency Callout — Leak</div><div style="font-size:13px;color:#8B8478;">INV-1021 · Yesterday, 17:02</div></div>
+        <div style="display:flex;align-items:center;gap:16px;"><div style="font-weight:800;font-size:16px;">£320.00</div><span class="status-pending">Awaiting bank</span></div>
+      </div>
+      <div class="card" style="padding:18px 22px;display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-weight:700;">Bathroom Refit — Deposit</div><div style="font-size:13px;color:#8B8478;">INV-1019 · Yesterday, 11:30</div></div>
+        <div style="display:flex;align-items:center;gap:16px;"><div style="font-weight:800;font-size:16px;">£1,200.00</div><span class="status-paid">Confirmed</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

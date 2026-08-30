@@ -1,0 +1,197 @@
+/* Design tokens — Option C, Merchant Utility (docs/decisions/0005-ui-direction.md).
+   Kept as CSS custom properties, not a component library, until Phase 3 needs one. */
+:root {
+  --color-bg: #f4f5f7;
+  --color-panel: #ffffff;
+  --color-sidebar: #161a23;
+  --color-sidebar-ink: #c7ccd6;
+  --color-ink: #12141a;
+  --color-muted: #5b616e;
+  --color-line: #e1e4e9;
+  --color-accent: #0f62fe;
+  --color-good: #12805c;
+  --color-good-bg: #e4f5ee;
+  --color-warn: #b5750a;
+  --color-warn-bg: #fdf1dd;
+  --color-bad: #c22a2a;
+  --color-bad-bg: #fbe7e7;
+  --radius: 6px;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  color: var(--color-ink);
+  background: var(--color-bg);
+  font-family: var(--font-ibm-plex-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body,
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+a:hover {
+  color: #0b4bc7;
+}
+
+code,
+.mono {
+  font-family: var(--font-ibm-plex-mono), ui-monospace, monospace;
+}
+
+/* --- Shared component classes (Option C) --- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: none;
+  border-radius: var(--radius);
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  background: var(--color-accent);
+  color: #fff;
+}
+.btn:hover {
+  background: #0b4bc7;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btn-secondary {
+  background: #fff;
+  color: var(--color-ink);
+  border: 1px solid var(--color-line);
+}
+.btn-secondary:hover {
+  background: var(--color-bg);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.field label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.field input,
+.field select {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  padding: 9px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fff;
+  color: var(--color-ink);
+}
+.field input:focus,
+.field select:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -1px;
+}
+.field-error {
+  font-size: 12px;
+  color: var(--color-bad);
+}
+
+.card {
+  background: var(--color-panel);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.badge-good {
+  color: var(--color-good);
+  background: var(--color-good-bg);
+}
+.badge-warn {
+  color: var(--color-warn);
+  background: var(--color-warn-bg);
+}
+.badge-bad {
+  color: var(--color-bad);
+  background: var(--color-bad-bg);
+}
+.badge-neutral {
+  color: var(--color-muted);
+  background: var(--color-bg);
+}
+
+.error-banner {
+  background: var(--color-bad-bg);
+  color: var(--color-bad);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+table.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-panel);
+}
+table.data-table th {
+  text-align: left;
+  font-size: 11px;
+  color: var(--color-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--color-line);
+  background: #fafbfc;
+}
+table.data-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid #eef0f2;
+  font-size: 13px;
+}
+table.data-table tr:last-child td {
+  border-bottom: none;
+}
+table.data-table tbody tr:hover {
+  background: var(--color-bg);
+}

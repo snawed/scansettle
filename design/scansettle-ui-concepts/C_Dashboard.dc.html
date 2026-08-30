@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;}
+  a{color:#0F62FE;text-decoration:none;} a:hover{color:#0B4BC7;}
+  .root{font-family:'IBM Plex Sans',system-ui,sans-serif;background:#F4F5F7;color:#12141A;width:1440px;height:900px;overflow:hidden;display:flex;font-size:13px;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .sidebar{width:200px;background:#161A23;color:#C7CCD6;flex-shrink:0;padding:20px 14px;display:flex;flex-direction:column;}
+  .nav-item{padding:9px 12px;border-radius:6px;font-weight:600;font-size:13px;margin-bottom:2px;}
+  .nav-item.active{background:#0F62FE;color:#fff;}
+  .stat{background:#fff;border:1px solid #E1E4E9;border-radius:6px;padding:14px 16px;flex:1;}
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #E1E4E9;border-radius:6px;overflow:hidden;}
+  th{text-align:left;font-size:11px;color:#5B616E;font-weight:700;text-transform:uppercase;letter-spacing:0.03em;padding:10px 14px;border-bottom:1px solid #E1E4E9;background:#FAFBFC;}
+  td{padding:11px 14px;border-bottom:1px solid #EEF0F2;font-size:13px;}
+  .badge{padding:3px 9px;border-radius:4px;font-size:11px;font-weight:700;}
+  .badge-good{color:#12805C;background:#E4F5EE;}
+  .badge-warn{color:#B5750A;background:#FDF1DD;}
+  .btn{background:#0F62FE;color:#fff;border:none;border-radius:6px;padding:9px 14px;font-weight:700;font-size:13px;font-family:inherit;cursor:pointer;}
+</style>
+</helmet>
+<div class="root">
+  <div class="sidebar">
+    <div style="color:#fff;font-weight:700;font-size:15px;margin-bottom:26px;">ScanSettle</div>
+    <div class="nav-item active">Dashboard</div>
+    <div class="nav-item">Payments</div>
+    <div class="nav-item">Links</div>
+    <div class="nav-item">ScanSettle Tables</div>
+    <div class="nav-item">Reconciliation</div>
+    <div class="nav-item">Settings</div>
+    <div style="flex:1;"></div>
+    <div style="font-size:11px;color:#5B616E;padding:8px 12px;">Dave's Heating &amp; Plumbing</div>
+  </div>
+
+  <div style="flex:1;padding:20px 24px;overflow:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div style="font-weight:700;font-size:16px;">Dashboard</div>
+      <div style="display:flex;gap:8px;">
+        <input placeholder="Search transactions" style="border:1px solid #E1E4E9;border-radius:6px;padding:8px 10px;font-size:12px;font-family:inherit;width:220px;">
+        <button class="btn">+ New Payment</button>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-bottom:16px;">
+      <div class="stat"><div style="color:#5B616E;font-size:11px;font-weight:700;">TODAY</div><div class="mono" style="font-weight:600;font-size:20px;margin-top:2px;">£4,280.00</div></div>
+      <div class="stat"><div style="color:#5B616E;font-size:11px;font-weight:700;">THIS MONTH</div><div class="mono" style="font-weight:600;font-size:20px;margin-top:2px;">£38,940.00</div></div>
+      <div class="stat"><div style="color:#5B616E;font-size:11px;font-weight:700;">TRANSACTIONS</div><div class="mono" style="font-weight:600;font-size:20px;margin-top:2px;">7</div></div>
+      <div class="stat"><div style="color:#5B616E;font-size:11px;font-weight:700;">FEES PAID</div><div class="mono" style="font-weight:600;font-size:20px;margin-top:2px;">£94.12</div></div>
+      <div class="stat"><div style="color:#5B616E;font-size:11px;font-weight:700;">PENDING</div><div class="mono" style="font-weight:600;font-size:20px;margin-top:2px;color:#B5750A;">1</div></div>
+    </div>
+
+    <table>
+      <tr><th>Description</th><th>Reference</th><th>Date</th><th>Amount</th><th>Fee</th><th>Status</th></tr>
+      <tr><td style="font-weight:600;">Boiler Installation</td><td class="mono">INV-1023</td><td>2026-08-29 09:41</td><td class="mono" style="font-weight:600;">£2,500.00</td><td class="mono" style="color:#5B616E;">£2.00</td><td><span class="badge badge-good">CONFIRMED</span></td></tr>
+      <tr><td style="font-weight:600;">Annual Service — Boiler</td><td class="mono">INV-1022</td><td>2026-08-29 08:15</td><td class="mono" style="font-weight:600;">£180.00</td><td class="mono" style="color:#5B616E;">£0.63</td><td><span class="badge badge-good">CONFIRMED</span></td></tr>
+      <tr><td style="font-weight:600;">Emergency Callout — Leak</td><td class="mono">INV-1021</td><td>2026-08-28 17:02</td><td class="mono" style="font-weight:600;">£320.00</td><td class="mono" style="color:#5B616E;">£1.12</td><td><span class="badge badge-warn">AWAITING BANK</span></td></tr>
+      <tr><td style="font-weight:600;">Bathroom Refit — Deposit</td><td class="mono">INV-1019</td><td>2026-08-28 11:30</td><td class="mono" style="font-weight:600;">£1,200.00</td><td class="mono" style="color:#5B616E;">£2.00</td><td><span class="badge badge-good">CONFIRMED</span></td></tr>
+      <tr><td style="font-weight:600;">Radiator Replacement</td><td class="mono">INV-1017</td><td>2026-08-24 14:20</td><td class="mono" style="font-weight:600;">£410.00</td><td class="mono" style="color:#5B616E;">£1.44</td><td><span class="badge badge-good">CONFIRMED</span></td></tr>
+      <tr><td style="font-weight:600;">Kitchen Tap Fitting</td><td class="mono">INV-1015</td><td>2026-08-22 10:05</td><td class="mono" style="font-weight:600;">£95.00</td><td class="mono" style="color:#5B616E;">£0.33</td><td><span class="badge badge-good">CONFIRMED</span></td></tr>
+      <tr><td style="font-weight:600;">Immersion Heater Repair</td><td class="mono">INV-1014</td><td>2026-08-21 15:48</td><td class="mono" style="font-weight:600;">£140.00</td><td class="mono" style="color:#5B616E;">£0.49</td><td><span class="badge badge-good">CONFIRMED</span></td></tr>
+    </table>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

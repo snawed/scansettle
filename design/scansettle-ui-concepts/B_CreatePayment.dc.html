@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;}
+  .root{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#0E1B33;color:#151312;width:1440px;height:900px;overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative;}
+  .serif{font-family:'Instrument Serif',serif;}
+  .card{background:#FFFFFF;border-radius:24px;box-shadow:0 30px 60px -20px rgba(0,0,0,0.5);}
+  label{font-size:13px;font-weight:700;color:#8B8478;display:block;margin-bottom:8px;}
+  input{width:100%;border:1.5px solid #EDE7DA;border-radius:12px;padding:14px 16px;font-family:inherit;font-size:15px;color:#151312;background:#FBF9F5;}
+  .field{margin-bottom:20px;}
+  .btn-primary{background:linear-gradient(135deg,#C9A227,#E7CE7A);color:#0E1B33;border:none;border-radius:100px;padding:16px 22px;font-weight:800;font-size:15px;font-family:inherit;cursor:pointer;width:100%;}
+</style>
+</helmet>
+<div class="root">
+  <div style="position:absolute;top:36px;left:48px;color:#F4E3AC;font-weight:800;font-size:19px;">ScanSettle</div>
+
+  <div style="display:flex;gap:0;">
+    <div class="card" style="width:460px;padding:44px;">
+      <div class="serif" style="font-size:30px;margin-bottom:6px;">Create a payment</div>
+      <div style="font-size:14px;color:#8B8478;margin-bottom:32px;">Get paid directly into your bank account.</div>
+
+      <div class="field">
+        <label>Amount</label>
+        <div style="position:relative;">
+          <span style="position:absolute;left:16px;top:14px;color:#8B8478;font-size:15px;">£</span>
+          <input style="padding-left:30px;font-size:22px;font-weight:800;" value="2,500.00">
+        </div>
+      </div>
+      <div class="field"><label>Description</label><input value="Boiler Installation"></div>
+      <div class="field"><label>Invoice reference</label><input value="INV-1023"></div>
+
+      <div style="height:1px;background:#EDE7DA;margin:24px 0;"></div>
+      <div style="font-size:12px;color:#8B8478;margin-bottom:16px;">Platform fee 0.35% (capped £2.00) — you receive £2,498.00</div>
+      <button class="btn-primary">Generate ScanSettle Link &amp; QR</button>
+    </div>
+
+    <div style="width:280px;background:linear-gradient(160deg,#16294A,#0E1B33);border-radius:0 24px 24px 0;box-shadow:0 30px 60px -20px rgba(0,0,0,0.5);padding:40px 32px;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+      <div style="width:160px;height:160px;background:#fff;border-radius:16px;padding:10px;margin-bottom:22px;">
+        <div style="width:100%;height:100%;background:repeating-linear-gradient(45deg,#0E1B33 0 6px,#fff 6px 12px);border-radius:8px;"></div>
+      </div>
+      <div class="serif" style="font-size:28px;color:#F4E3AC;">£2,500.00</div>
+      <div style="font-size:13px;color:#C7CCDA;margin-top:6px;">Dave's Heating &amp; Plumbing</div>
+      <div style="font-size:12px;color:#8B93AC;margin-top:14px;">scansettle.link/dp-inv1023</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

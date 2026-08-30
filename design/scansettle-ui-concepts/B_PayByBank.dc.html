@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;}
+  .root{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:radial-gradient(120% 100% at 20% 0%,#1F3357 0%,#0E1B33 55%,#0A1526 100%);color:#fff;width:390px;height:844px;overflow:hidden;display:flex;flex-direction:column;padding:32px 26px;}
+  .serif{font-family:'Instrument Serif',serif;}
+  .btn-primary{background:linear-gradient(135deg,#C9A227,#E7CE7A);color:#0E1B33;border:none;border-radius:100px;padding:19px 22px;font-weight:800;font-size:16px;font-family:inherit;cursor:pointer;width:100%;}
+</style>
+</helmet>
+<div class="root">
+  <div style="font-weight:800;font-size:16px;color:#F4E3AC;margin-bottom:70px;">ScanSettle</div>
+
+  <div style="flex:1;">
+    <div style="width:48px;height:48px;border-radius:100px;background:linear-gradient(135deg,#C9A227,#E7CE7A);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#0E1B33;margin-bottom:20px;">DP</div>
+    <div style="font-size:14px;color:#C7CCDA;font-weight:600;margin-bottom:8px;">Dave's Heating &amp; Plumbing</div>
+    <div class="serif" style="font-size:56px;margin-bottom:12px;">£2,500.00</div>
+    <div style="font-size:15px;color:#E7E9F0;font-weight:600;">Boiler Installation</div>
+    <div style="font-size:13px;color:#8B93AC;margin-top:2px;">Ref: INV-1023</div>
+  </div>
+
+  <div>
+    <button class="btn-primary">Pay by Bank</button>
+    <div style="text-align:center;font-size:12px;color:#8B93AC;margin-top:18px;line-height:1.5;">
+      Secured by your bank's login. ScanSettle never sees or stores your bank details.
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

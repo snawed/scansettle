@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;}
+  .root{font-family:'IBM Plex Sans',system-ui,sans-serif;background:#fff;color:#12141A;width:390px;height:844px;overflow:hidden;display:flex;flex-direction:column;padding:24px 22px;}
+  .bank-row{display:flex;align-items:center;gap:12px;padding:12px 8px;border-bottom:1px solid #EEF0F2;}
+  .mono-box{width:32px;height:32px;border-radius:6px;background:#F4F5F7;border:1px solid #E1E4E9;flex-shrink:0;}
+</style>
+</helmet>
+<div class="root">
+  <div style="font-size:11px;color:#5B616E;font-weight:600;margin-bottom:4px;">← CANCEL</div>
+  <div style="font-size:18px;font-weight:700;margin-bottom:14px;">Choose your bank</div>
+
+  <input placeholder="Search banks" style="width:100%;border:1px solid #E1E4E9;border-radius:6px;padding:10px 12px;font-family:inherit;font-size:13px;margin-bottom:6px;">
+
+  <div style="flex:1;overflow:auto;margin-top:6px;">
+    <div style="font-size:10px;color:#5B616E;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;padding:10px 8px 2px;">Popular</div>
+    <div class="bank-row"><div class="mono-box"></div><div style="font-weight:600;font-size:14px;flex:1;">Monzo</div><div style="font-size:10px;color:#12805C;font-weight:700;">INSTANT</div></div>
+    <div class="bank-row"><div class="mono-box"></div><div style="font-weight:600;font-size:14px;flex:1;">Barclays</div><div style="font-size:10px;color:#12805C;font-weight:700;">INSTANT</div></div>
+    <div class="bank-row"><div class="mono-box"></div><div style="font-weight:600;font-size:14px;flex:1;">HSBC UK</div><div style="font-size:10px;color:#12805C;font-weight:700;">INSTANT</div></div>
+    <div class="bank-row"><div class="mono-box"></div><div style="font-weight:600;font-size:14px;flex:1;">NatWest</div><div style="font-size:10px;color:#12805C;font-weight:700;">INSTANT</div></div>
+    <div style="font-size:10px;color:#5B616E;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;padding:14px 8px 2px;">All banks</div>
+    <div class="bank-row"><div class="mono-box"></div><div style="font-weight:600;font-size:14px;flex:1;">Lloyds Bank</div></div>
+    <div class="bank-row"><div class="mono-box"></div><div style="font-weight:600;font-size:14px;flex:1;">Nationwide</div></div>
+    <div class="bank-row"><div class="mono-box"></div><div style="font-weight:600;font-size:14px;flex:1;">Santander UK</div></div>
+    <div class="bank-row"><div class="mono-box"></div><div style="font-weight:600;font-size:14px;flex:1;">Starling Bank</div></div>
+    <div class="bank-row"><div class="mono-box"></div><div style="font-weight:600;font-size:14px;flex:1;">TSB</div></div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

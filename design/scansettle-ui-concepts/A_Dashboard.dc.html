@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;}
+  a{color:#2454FF;text-decoration:none;} a:hover{color:#1B3ECC;}
+  .root{font-family:'Manrope',system-ui,sans-serif;background:#FFFFFF;color:#0B0F19;width:1440px;height:900px;overflow:hidden;display:flex;flex-direction:column;}
+  .status-paid{color:#16A34A;background:#EAFBF1;border:1px solid #CFF2DC;padding:4px 10px;border-radius:100px;font-size:12px;font-weight:700;}
+  .status-pending{color:#D97706;background:#FEF6E8;border:1px solid #F5E1B8;padding:4px 10px;border-radius:100px;font-size:12px;font-weight:700;}
+  .btn-primary{background:#2454FF;color:#fff;border:none;border-radius:10px;padding:12px 20px;font-weight:700;font-size:14px;font-family:inherit;cursor:pointer;}
+  .row{display:flex;align-items:center;}
+  .tx-row{display:grid;grid-template-columns:2.2fr 1.4fr 1fr 1fr 0.8fr;align-items:center;padding:18px 0;border-bottom:1px solid #EFF0F3;}
+</style>
+</helmet>
+<div class="root">
+
+  <div class="row" style="justify-content:space-between;padding:24px 48px;border-bottom:1px solid #EFF0F3;">
+    <div class="row" style="gap:36px;">
+      <div style="font-weight:800;font-size:19px;letter-spacing:-0.02em;">ScanSettle</div>
+      <div class="row" style="gap:28px;font-size:14px;color:#6B7280;font-weight:600;">
+        <div style="color:#0B0F19;">Dashboard</div>
+        <div>Payments</div>
+        <div>Links</div>
+        <div>ScanSettle Tables</div>
+        <div>Reconciliation</div>
+      </div>
+    </div>
+    <div class="row" style="gap:16px;">
+      <button class="btn-primary">+ New Payment</button>
+      <div style="width:36px;height:36px;border-radius:100px;background:#F0F1F4;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">DP</div>
+    </div>
+  </div>
+
+  <div style="padding:40px 48px;flex:1;overflow:auto;">
+    <div style="font-size:14px;color:#6B7280;font-weight:600;margin-bottom:6px;">Today</div>
+    <div class="row" style="gap:64px;align-items:flex-end;margin-bottom:44px;">
+      <div>
+        <div style="font-size:56px;font-weight:800;letter-spacing:-0.03em;">£4,280.00</div>
+        <div style="font-size:14px;color:#6B7280;margin-top:4px;">across 7 payments</div>
+      </div>
+      <div style="padding-bottom:8px;">
+        <div style="font-size:13px;color:#6B7280;font-weight:600;">This month</div>
+        <div style="font-size:22px;font-weight:800;margin-top:2px;">£38,940.00</div>
+      </div>
+      <div style="padding-bottom:8px;">
+        <div style="font-size:13px;color:#6B7280;font-weight:600;">Fees paid</div>
+        <div style="font-size:22px;font-weight:800;margin-top:2px;">£94.12</div>
+      </div>
+    </div>
+
+    <div class="row" style="justify-content:space-between;margin-bottom:8px;">
+      <div style="font-size:16px;font-weight:800;">Recent transactions</div>
+      <div style="font-size:13px;color:#2454FF;font-weight:700;">View all</div>
+    </div>
+
+    <div class="tx-row" style="border-bottom:1px solid #0B0F19;padding-top:0;font-size:12px;color:#9CA3AF;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">
+      <div>Description</div><div>Reference</div><div>Date</div><div>Amount</div><div>Status</div>
+    </div>
+
+    <div class="tx-row">
+      <div style="font-weight:700;">Boiler Installation</div>
+      <div style="color:#6B7280;font-size:14px;">INV-1023</div>
+      <div style="color:#6B7280;font-size:14px;">Today, 09:41</div>
+      <div style="font-weight:700;">£2,500.00</div>
+      <div><span class="status-paid">Confirmed</span></div>
+    </div>
+    <div class="tx-row">
+      <div style="font-weight:700;">Annual Service — Boiler</div>
+      <div style="color:#6B7280;font-size:14px;">INV-1022</div>
+      <div style="color:#6B7280;font-size:14px;">Today, 08:15</div>
+      <div style="font-weight:700;">£180.00</div>
+      <div><span class="status-paid">Confirmed</span></div>
+    </div>
+    <div class="tx-row">
+      <div style="font-weight:700;">Emergency Callout — Leak</div>
+      <div style="color:#6B7280;font-size:14px;">INV-1021</div>
+      <div style="color:#6B7280;font-size:14px;">Yesterday, 17:02</div>
+      <div style="font-weight:700;">£320.00</div>
+      <div><span class="status-pending">Awaiting bank</span></div>
+    </div>
+    <div class="tx-row">
+      <div style="font-weight:700;">Bathroom Refit — Deposit</div>
+      <div style="color:#6B7280;font-size:14px;">INV-1019</div>
+      <div style="color:#6B7280;font-size:14px;">Yesterday, 11:30</div>
+      <div style="font-weight:700;">£1,200.00</div>
+      <div><span class="status-paid">Confirmed</span></div>
+    </div>
+    <div class="tx-row">
+      <div style="font-weight:700;">Radiator Replacement</div>
+      <div style="color:#6B7280;font-size:14px;">INV-1017</div>
+      <div style="color:#6B7280;font-size:14px;">Mon, 14:20</div>
+      <div style="font-weight:700;">£410.00</div>
+      <div><span class="status-paid">Confirmed</span></div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

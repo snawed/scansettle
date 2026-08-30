@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;}
+  .root{font-family:'Manrope',system-ui,sans-serif;background:#FFFFFF;color:#0B0F19;width:390px;height:844px;overflow:hidden;display:flex;flex-direction:column;padding:28px 24px;}
+  .bank-row{display:flex;align-items:center;gap:14px;padding:16px 4px;border-bottom:1px solid #F0F1F4;}
+  .mono{width:38px;height:38px;border-radius:10px;background:#F0F1F4;flex-shrink:0;}
+</style>
+</helmet>
+<div class="root">
+  <div style="font-size:12px;color:#9CA3AF;font-weight:700;margin-bottom:4px;">← Cancel</div>
+  <div style="font-size:22px;font-weight:800;letter-spacing:-0.02em;margin-bottom:18px;">Choose your bank</div>
+
+  <input placeholder="Search banks" style="width:100%;border:1px solid #E1E3E8;border-radius:10px;padding:13px 16px;font-family:inherit;font-size:15px;background:#FBFBFC;margin-bottom:8px;">
+
+  <div style="flex:1;overflow:auto;margin-top:8px;">
+    <div style="font-size:12px;color:#9CA3AF;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;padding:10px 4px 4px;">Popular</div>
+    <div class="bank-row"><div class="mono"></div><div style="font-weight:700;font-size:15px;">Monzo</div></div>
+    <div class="bank-row"><div class="mono"></div><div style="font-weight:700;font-size:15px;">Barclays</div></div>
+    <div class="bank-row"><div class="mono"></div><div style="font-weight:700;font-size:15px;">HSBC UK</div></div>
+    <div class="bank-row"><div class="mono"></div><div style="font-weight:700;font-size:15px;">NatWest</div></div>
+    <div style="font-size:12px;color:#9CA3AF;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;padding:16px 4px 4px;">All banks</div>
+    <div class="bank-row"><div class="mono"></div><div style="font-weight:700;font-size:15px;">Lloyds Bank</div></div>
+    <div class="bank-row"><div class="mono"></div><div style="font-weight:700;font-size:15px;">Nationwide</div></div>
+    <div class="bank-row"><div class="mono"></div><div style="font-weight:700;font-size:15px;">Santander UK</div></div>
+    <div class="bank-row"><div class="mono"></div><div style="font-weight:700;font-size:15px;">Starling Bank</div></div>
+    <div class="bank-row"><div class="mono"></div><div style="font-weight:700;font-size:15px;">TSB</div></div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;}
+  .root{font-family:'IBM Plex Sans',system-ui,sans-serif;background:#fff;color:#12141A;width:390px;height:844px;overflow:hidden;display:flex;flex-direction:column;padding:22px 20px;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .pill{flex:1;text-align:center;padding:13px 0;border-radius:6px;border:1px solid #E1E4E9;font-weight:700;font-size:14px;}
+  .pill.selected{background:#0F62FE;color:#fff;border-color:#0F62FE;}
+  .btn{background:#0F62FE;color:#fff;border:none;border-radius:6px;padding:15px 20px;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;width:100%;}
+</style>
+</helmet>
+<div class="root">
+  <div style="font-size:11px;color:#5B616E;font-weight:600;margin-bottom:4px;">← TABLE 14 · THE RED LION</div>
+  <div style="font-size:18px;font-weight:700;margin-bottom:22px;">Add a tip?</div>
+
+  <div style="flex:1;">
+    <div style="display:flex;gap:8px;margin-bottom:22px;">
+      <div class="pill">No tip</div>
+      <div class="pill">5%</div>
+      <div class="pill selected">10%</div>
+      <div class="pill">Custom</div>
+    </div>
+
+    <div style="border:1px solid #E1E4E9;border-radius:6px;padding:16px;">
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:#5B616E;padding:6px 0;"><span>Your share</span><span class="mono">£20.00</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:#5B616E;padding:6px 0;"><span>Tip (10%)</span><span class="mono">£2.00</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:20px;font-weight:700;padding-top:12px;border-top:1px solid #E1E4E9;margin-top:8px;"><span>Total</span><span class="mono">£22.00</span></div>
+    </div>
+  </div>
+
+  <button class="btn">Pay by Bank — £22.00</button>
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;}
+  .root{font-family:'Manrope',system-ui,sans-serif;background:#FFFFFF;color:#0B0F19;width:390px;height:844px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 24px;text-align:center;}
+  .btn-primary{background:#0B0F19;color:#fff;border:none;border-radius:12px;padding:16px 22px;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;width:100%;}
+</style>
+</helmet>
+<div class="root">
+  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" style="margin-bottom:24px;">
+    <circle cx="32" cy="32" r="31" stroke="#16A34A" stroke-width="2"/>
+    <path d="M20 33L28 41L45 24" stroke="#16A34A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+
+  <div style="font-size:13px;color:#6B7280;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:10px;">Payment complete</div>
+  <div style="font-size:44px;font-weight:800;letter-spacing:-0.03em;margin-bottom:18px;">£2,500.00</div>
+
+  <div style="width:100%;border:1px solid #EFF0F3;border-radius:12px;padding:20px;text-align:left;margin-bottom:32px;">
+    <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px;"><span style="color:#6B7280;">Paid to</span><span style="font-weight:700;">Dave's Heating &amp; Plumbing</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px;border-top:1px solid #F5F5F7;"><span style="color:#6B7280;">Reference</span><span style="font-weight:700;">INV-1023</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px;border-top:1px solid #F5F5F7;"><span style="color:#6B7280;">Date</span><span style="font-weight:700;">29 Aug 2026, 14:32</span></div>
+  </div>
+
+  <button class="btn-primary">Done</button>
+</div>
+</x-dc>
+</body>
+</html>

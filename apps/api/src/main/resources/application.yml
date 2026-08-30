@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: scansettle-api
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/scansettle}
+    username: ${SPRING_DATASOURCE_USERNAME:scansettle}
+    password: ${SPRING_DATASOURCE_PASSWORD:scansettle}
+  jpa:
+    hibernate:
+      ddl-auto: validate # Flyway owns the schema — Hibernate only ever validates against it.
+    open-in-view: false
+  flyway:
+    enabled: true
+
+server:
+  port: ${SERVER_PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+
+app:
+  cors:
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:3000}
+  encryption:
+    key: ${APP_ENCRYPTION_KEY:} # base64, must decode to 32 bytes (AES-256)
+  security:
+    jwt:
+      secret: ${APP_JWT_SECRET:}
+      ttl-minutes: ${APP_JWT_TTL_MINUTES:60}
+      mfa-ttl-minutes: ${APP_JWT_MFA_TTL_MINUTES:5}
+  open-banking:
+    provider: ${OPEN_BANKING_PROVIDER:mock}
+    client-id: ${OPEN_BANKING_CLIENT_ID:}
+    client-secret: ${OPEN_BANKING_CLIENT_SECRET:}
+    webhook-secret: ${OPEN_BANKING_WEBHOOK_SECRET:}
+    redirect-url: ${OPEN_BANKING_REDIRECT_URL:}
+    # Where the mock provider sends customers to "authenticate" — ScanSettle's own
+    # pretend-bank page, since {{OPEN_BANKING_PROVIDER}} isn't selected yet.
+    mock-bank-base-url: ${APP_MOCK_BANK_BASE_URL:http://localhost:3000/mock-bank}
+  links:
+    base-url: ${APP_LINKS_BASE_URL:http://localhost:3000/pay}
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} [correlationId=%X{correlationId:-none}] - %msg%n"
