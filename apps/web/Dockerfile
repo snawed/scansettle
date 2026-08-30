@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1
 
-FROM node:20-alpine AS deps
+FROM node:26-alpine AS deps
 WORKDIR /build
 COPY package.json package-lock.json ./
 RUN npm ci
 
-FROM node:20-alpine AS build
+FROM node:26-alpine AS build
 WORKDIR /build
 COPY --from=deps /build/node_modules ./node_modules
 COPY . .
@@ -18,7 +18,7 @@ ARG NEXT_PUBLIC_API_BASE_URL=http://localhost:8080
 ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
 RUN npm run build
 
-FROM node:20-alpine AS runner
+FROM node:26-alpine AS runner
 RUN addgroup -S scansettle && adduser -S scansettle -G scansettle
 WORKDIR /app
 ENV NODE_ENV=production
