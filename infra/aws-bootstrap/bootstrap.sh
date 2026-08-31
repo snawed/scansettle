@@ -205,6 +205,12 @@ PERMISSIONS_POLICY=$(cat <<'EOF'
         "ecr:TagResource"
       ],
       "Resource": "*"
+    },
+    {
+      "Sid": "KmsLookup",
+      "Effect": "Allow",
+      "Action": ["kms:ListAliases", "kms:DescribeKey"],
+      "Resource": "*"
     }
   ]
 }
