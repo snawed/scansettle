@@ -34,21 +34,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # TEMPORARY — decodes and prints the actual OIDC token claims GitHub
-      # sends, so we can compare the real `sub`/`aud` byte-for-byte against
-      # the IAM role's trust policy instead of guessing from AWS's opaque
-      # "Not authorized" error. Remove once the assume-role issue is fixed —
-      # nothing here is secret (the JWT is short-lived and scoped to this
-      # run), but there's no reason to keep printing it long-term.
-      - name: Debug — decode OIDC token claims
-        run: |
-          TOKEN=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com" | jq -r .value)
-          PAYLOAD=$(echo "$TOKEN" | cut -d '.' -f2)
-          MOD=$(( ${#PAYLOAD} % 4 ))
-          if [ "$MOD" -eq 2 ]; then PAYLOAD="${PAYLOAD}=="; elif [ "$MOD" -eq 3 ]; then PAYLOAD="${PAYLOAD}="; fi
-          echo "$PAYLOAD" | tr '_-' '/+' | base64 -d | jq '{sub, aud, repository, repository_owner, ref, event_name}'
-
       - name: Configure AWS credentials (OIDC — no stored keys)
         uses: aws-actions/configure-aws-credentials@v4
         with:

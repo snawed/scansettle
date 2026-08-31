@@ -83,13 +83,19 @@ else
 fi
 
 # --- 4. IAM role for GitHub Actions (trust policy scoped to this one repo) -----
+# Both actions are required: aws-actions/configure-aws-credentials tags the
+# assumed session with GitHub context (repo/actor/workflow/etc.) by default,
+# and AWS rejects the *entire* AssumeRoleWithWebIdentity call — with the same
+# generic "Not authorized" error, no distinct message — if the trust policy
+# doesn't also allow sts:TagSession. Easy to miss since nothing about the
+# error points at tagging specifically.
 TRUST_POLICY=$(cat <<EOF
 {
   "Version": "2012-10-17",
   "Statement": [{
     "Effect": "Allow",
     "Principal": { "Federated": "${OIDC_ARN}" },
-    "Action": "sts:AssumeRoleWithWebIdentity",
+    "Action": ["sts:AssumeRoleWithWebIdentity", "sts:TagSession"],
     "Condition": {
       "StringEquals": { "token.actions.githubusercontent.com:aud": "sts.amazonaws.com" },
       "StringLike": { "token.actions.githubusercontent.com:sub": "repo:${GITHUB_REPO}:*" }
