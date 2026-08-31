@@ -29,6 +29,8 @@ set -euo pipefail
 REGION="eu-west-2"
 ACCOUNT_ID="$(aws sts get-caller-identity --query Account --output text)"
 GITHUB_REPO="snawed/scansettle"
+GITHUB_REPO_OWNER="${GITHUB_REPO%%/*}"
+GITHUB_REPO_NAME="${GITHUB_REPO##*/}"
 STATE_BUCKET="scansettle-terraform-state-${ACCOUNT_ID}"
 LOCK_TABLE="scansettle-terraform-locks"
 ROLE_NAME="scansettle-nonprod-deploy"
@@ -83,12 +85,24 @@ else
 fi
 
 # --- 4. IAM role for GitHub Actions (trust policy scoped to this one repo) -----
-# Both actions are required: aws-actions/configure-aws-credentials tags the
-# assumed session with GitHub context (repo/actor/workflow/etc.) by default,
-# and AWS rejects the *entire* AssumeRoleWithWebIdentity call — with the same
-# generic "Not authorized" error, no distinct message — if the trust policy
-# doesn't also allow sts:TagSession. Easy to miss since nothing about the
-# error points at tagging specifically.
+# Two things about the sub condition that aren't obvious from GitHub's own docs:
+#
+# 1. GitHub can issue the OIDC `sub` claim in TWO different formats:
+#      repo:OWNER/REPO:ref:refs/heads/BRANCH                (classic)
+#      repo:OWNER@id/REPO@id:ref:refs/heads/BRANCH           (ID-qualified)
+#    The ID-qualified form is a GitHub hardening feature — the numeric IDs are
+#    stable across a repo/owner rename, closing a hijack path where a stale
+#    trust policy would otherwise still trust whoever renames into the old
+#    name. Which form you get isn't something this script controls, so both
+#    patterns are allowed below — matching only the classic form is a real,
+#    silent trap: everything about the role/provider/policy can be completely
+#    correct and it will still fail with the exact same generic
+#    "Not authorized to perform sts:AssumeRoleWithWebIdentity" error.
+#
+# 2. aws-actions/configure-aws-credentials tags the assumed session with
+#    GitHub context (repo/actor/workflow/etc.) by default, and AWS rejects the
+#    *entire* AssumeRoleWithWebIdentity call — same generic error again, no
+#    distinct message — if the trust policy doesn't also allow sts:TagSession.
 TRUST_POLICY=$(cat <<EOF
 {
   "Version": "2012-10-17",
@@ -98,7 +112,12 @@ TRUST_POLICY=$(cat <<EOF
     "Action": ["sts:AssumeRoleWithWebIdentity", "sts:TagSession"],
     "Condition": {
       "StringEquals": { "token.actions.githubusercontent.com:aud": "sts.amazonaws.com" },
-      "StringLike": { "token.actions.githubusercontent.com:sub": "repo:${GITHUB_REPO}:*" }
+      "StringLike": {
+        "token.actions.githubusercontent.com:sub": [
+          "repo:${GITHUB_REPO}:*",
+          "repo:${GITHUB_REPO_OWNER}@*/${GITHUB_REPO_NAME}@*:*"
+        ]
+      }
     }
   }]
 }

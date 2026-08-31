@@ -44,3 +44,32 @@ later, and no application code needs to anticipate either environment.
   built, not before.
 - Neither path requires a real `{{OPEN_BANKING_PROVIDER}}` to be named — Phase 5
   stays parked independently of Phase 10's infrastructure work.
+
+## Addendum: two silent OIDC trust-policy traps (2026-08-31)
+
+Getting the non-prod path's first real `terraform apply` to actually run
+surfaced two AWS OIDC gotchas worth recording, since both produce the exact
+same generic `Not authorized to perform sts:AssumeRoleWithWebIdentity` error
+with no distinguishing detail — every other part of the setup (OIDC provider,
+audience, thumbprint, trust policy `Principal`, no SCP) can be completely
+correct and the assume-role call still fails silently for either reason:
+
+1. **`aws-actions/configure-aws-credentials` tags the assumed session** with
+   GitHub context by default — the trust policy's `Action` must include
+   `sts:TagSession` alongside `sts:AssumeRoleWithWebIdentity`, or grant
+   `role-skip-session-tagging: true` on the action's inputs instead (the
+   route `infra/aws-bootstrap/bootstrap.sh` and both workflows now take —
+   simpler than granting the extra permission, and session tags aren't
+   needed for this environment).
+2. **GitHub's OIDC `sub` claim comes in two formats**: the classic
+   `repo:OWNER/REPO:ref:...` and, apparently now the default for at least
+   some accounts, an ID-qualified `repo:OWNER@id/REPO@id:ref:...` — a
+   hardening feature so a trust policy stays valid (and doesn't silently
+   start trusting an attacker) across a repo or account rename. A trust
+   policy's `StringLike` condition matching only the classic format never
+   matches this ID-qualified form. `bootstrap.sh` now allows both patterns.
+
+Diagnosed by temporarily adding a workflow step that requests and decodes the
+actual OIDC token's claims directly (bypassing the wrapped action's opaque
+error) — worth reaching for immediately next time rather than working through
+the AWS-side checklist first, since the AWS side can be entirely correct.
