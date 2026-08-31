@@ -202,7 +202,9 @@ PERMISSIONS_POLICY=$(cat <<'EOF'
       "Effect": "Allow",
       "Action": [
         "ecr:CreateRepository", "ecr:DeleteRepository", "ecr:DescribeRepositories",
-        "ecr:PutLifecyclePolicy", "ecr:SetRepositoryPolicy", "ecr:GetAuthorizationToken",
+        "ecr:PutLifecyclePolicy", "ecr:GetLifecyclePolicy", "ecr:DeleteLifecyclePolicy",
+        "ecr:SetRepositoryPolicy", "ecr:GetRepositoryPolicy", "ecr:DeleteRepositoryPolicy",
+        "ecr:GetAuthorizationToken",
         "ecr:BatchCheckLayerAvailability", "ecr:GetDownloadUrlForLayer", "ecr:BatchGetImage",
         "ecr:PutImage", "ecr:InitiateLayerUpload", "ecr:UploadLayerPart", "ecr:CompleteLayerUpload",
         "ecr:TagResource", "ecr:UntagResource", "ecr:ListTagsForResource"
