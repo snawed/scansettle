@@ -34,11 +34,38 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # TEMPORARY — one more diagnostic round: check the secret isn't subtly
+      # corrupted (length/hash only, never the value itself) and get AWS's own
+      # raw error from a manual, untagged assume-role-with-web-identity call,
+      # since the wrapped action's error has stayed identical through every
+      # config fix so far. Remove once this is resolved.
+      - name: Debug — verify secret and try a raw, untagged assume-role
+        env:
+          ROLE_ARN: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+        run: |
+          echo "Role ARN length: ${#ROLE_ARN}"
+          echo -n "$ROLE_ARN" | md5sum
+
+          TOKEN=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com" | jq -r .value)
+          PAYLOAD=$(echo "$TOKEN" | cut -d '.' -f2)
+          MOD=$(( ${#PAYLOAD} % 4 ))
+          if [ "$MOD" -eq 2 ]; then PAYLOAD="${PAYLOAD}=="; elif [ "$MOD" -eq 3 ]; then PAYLOAD="${PAYLOAD}="; fi
+          echo "$PAYLOAD" | tr '_-' '/+' | base64 -d | jq '{sub, aud, iss, repository, repository_owner, ref, event_name}'
+
+          echo "--- Raw, untagged assume-role-with-web-identity ---"
+          aws sts assume-role-with-web-identity \
+            --role-arn "$ROLE_ARN" \
+            --role-session-name "debug-test" \
+            --web-identity-token "$TOKEN" \
+            --duration-seconds 900 2>&1 || true
+
       - name: Configure AWS credentials (OIDC — no stored keys)
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
+          role-skip-session-tagging: true
 
       - uses: hashicorp/setup-terraform@v3
         with:
