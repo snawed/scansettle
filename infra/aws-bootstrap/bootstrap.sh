@@ -178,7 +178,9 @@ PERMISSIONS_POLICY=$(cat <<'EOF'
         "iam:CreateInstanceProfile", "iam:DeleteInstanceProfile", "iam:GetInstanceProfile",
         "iam:AddRoleToInstanceProfile", "iam:RemoveRoleFromInstanceProfile",
         "iam:AttachRolePolicy", "iam:DetachRolePolicy", "iam:PutRolePolicy", "iam:DeleteRolePolicy", "iam:GetRolePolicy",
-        "iam:PassRole", "iam:TagRole", "iam:ListRolePolicies", "iam:ListAttachedRolePolicies"
+        "iam:PassRole", "iam:ListRolePolicies", "iam:ListAttachedRolePolicies",
+        "iam:TagRole", "iam:UntagRole", "iam:ListRoleTags",
+        "iam:TagInstanceProfile", "iam:UntagInstanceProfile", "iam:ListInstanceProfileTags"
       ],
       "Resource": [
         "arn:aws:iam::*:role/scansettle-*",
@@ -190,7 +192,8 @@ PERMISSIONS_POLICY=$(cat <<'EOF'
       "Effect": "Allow",
       "Action": [
         "ssm:PutParameter", "ssm:GetParameter", "ssm:GetParameters", "ssm:DeleteParameter",
-        "ssm:AddTagsToResource", "ssm:SendCommand", "ssm:GetCommandInvocation", "ssm:ListCommandInvocations"
+        "ssm:DescribeParameters", "ssm:AddTagsToResource", "ssm:RemoveTagsFromResource", "ssm:ListTagsForResource",
+        "ssm:SendCommand", "ssm:GetCommandInvocation", "ssm:ListCommandInvocations"
       ],
       "Resource": "*"
     },
@@ -202,7 +205,7 @@ PERMISSIONS_POLICY=$(cat <<'EOF'
         "ecr:PutLifecyclePolicy", "ecr:SetRepositoryPolicy", "ecr:GetAuthorizationToken",
         "ecr:BatchCheckLayerAvailability", "ecr:GetDownloadUrlForLayer", "ecr:BatchGetImage",
         "ecr:PutImage", "ecr:InitiateLayerUpload", "ecr:UploadLayerPart", "ecr:CompleteLayerUpload",
-        "ecr:TagResource"
+        "ecr:TagResource", "ecr:UntagResource", "ecr:ListTagsForResource"
       ],
       "Resource": "*"
     },

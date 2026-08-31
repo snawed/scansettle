@@ -33,8 +33,9 @@ data "aws_kms_alias" "ssm_default" {
 # (the instance role below grants that), matching docs/deployment.md's
 # preference to avoid an open SSH port on the internet.
 resource "aws_security_group" "app" {
-  name        = "scansettle-nonprod-app"
-  description = "ScanSettle non-prod — app ports only, no SSH"
+  name = "scansettle-nonprod-app"
+  # EC2's GroupDescription field only accepts ASCII - no em dash here.
+  description = "ScanSettle non-prod - app ports only, no SSH"
   vpc_id      = data.aws_vpc.default.id
 
   dynamic "ingress" {
