@@ -34,7 +34,7 @@ jobs:
         run: echo "IMAGE_TAG=${{ github.event.workflow_run.head_sha || github.sha }}" >> "$GITHUB_ENV"
 
       - name: Configure AWS credentials (OIDC — no stored keys)
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
