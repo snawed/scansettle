@@ -26,7 +26,7 @@ jobs:
     steps:
       # workflow_run doesn't automatically check out the tested commit — pin to
       # it explicitly (falls back to the triggering commit for workflow_dispatch).
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
